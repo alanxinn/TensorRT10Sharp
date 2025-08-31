@@ -227,3 +227,7 @@ scripts\build.bat
 ## 🔗 相关链接
 - [NVIDIA TensorRT](https://developer.nvidia.com/tensorrt)
 - [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) 
+
+## 感谢
+
+https://github.com/guojin-yan/TensorRT-CSharp-API
