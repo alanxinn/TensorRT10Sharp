@@ -17,7 +17,7 @@
     <Description>TensorRT10 wrapper for .NET - 为.NET平台提供的NVIDIA TensorRT10封装库</Description>
     <Authors>TensorRTSharp Team</Authors>
     <Company>TensorRTSharp</Company>
-    <PackageId>TensorRT10Sharp</PackageId>
+    <PackageId>alanxinn.TensorRT10Sharp</PackageId>
     <PackageVersion>0.1.0</PackageVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/alanxinn/TensorRT10Sharp</PackageProjectUrl>

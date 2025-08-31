@@ -1,5 +1,7 @@
 # TensorRT10Sharp Managed (C# 类库)
 
+**[English](README_EN.md)** | **中文**
+
 这是TensorRT10Sharp项目的托管C#类库部分，提供.NET友好的API接口，封装了Native C++库的功能。现已重构为标准的 .NET 类库，可作为 NuGet 包分发和被其他项目引用。
 
 ## 📁 项目结构

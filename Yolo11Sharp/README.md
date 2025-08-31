@@ -1,5 +1,7 @@
 # Yolo11Sharp - YOLO11 TensorRT C# 推理库
 
+**[English](README_EN.md)** | **中文**
+
 🚀 基于 TensorRT10Sharp 的高性能 YOLO11 多模式推理 C# 实现，支持目标检测、图像分类、实例分割、定向边界框检测和姿态估计。
 
 [![.NET](https://img.shields.io/badge/.NET-6.0+-blue.svg)](https://dotnet.microsoft.com/download)

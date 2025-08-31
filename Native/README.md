@@ -1,5 +1,7 @@
 # TensorRT10Sharp Native (C++)
 
+**[English](README_EN.md)** | **中文**
+
 这是TensorRT10Sharp项目的原生C++部分，负责封装TensorRT C++ API并提供C风格的接口供C#调用。
 
 ## ✨ TensorRT 10 更新

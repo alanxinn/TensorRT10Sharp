@@ -1,5 +1,7 @@
 # TensorRT10Sharp C#
 
+**[English](README_EN.md)** | **中文**
+
 TensorRT10Sharp C# 是一个为 .NET 平台提供的 NVIDIA TensorRT10 封装库，使开发者能够在 C# 中轻松使用 TensorRT 进行高性能深度学习推理。
 
 ## ✨ 最新更新
@@ -11,6 +13,7 @@ TensorRT10Sharp C# 是一个为 .NET 平台提供的 NVIDIA TensorRT10 封装库
 - ✅ **跨平台支持**: 优化的Windows构建流程
 - 🎉 **Yolo11Sharp 集成**: 新增完整的 YOLO11 多模式推理库
 - ✅ **检测功能验证**: YOLO11 目标检测已完成测试验证
+- 📦 **NuGet 包发布**: 已发布到 NuGet.org，支持包管理器安装
 
 ## 🚀 子项目
 
@@ -61,7 +64,7 @@ TensorRT10Sharp/
 │   │   └── clean.bat              # 清理项目
 │   ├── bin/Release/net6.0/        # 构建输出
 │   │   ├── TensorRT10Sharp.dll    # 主要类库
-│   │   └── TensorRT10Sharp.0.1.0.nupkg # NuGet 包
+│   │   └── alanxinn.TensorRT10Sharp.0.1.0.nupkg # NuGet 包
 │   ├── TensorRT10Sharp.csproj     # C# 类库项目文件
 │   └── README.md                  # Managed项目说明
 ├── Yolo11Sharp/                    # 🎯 YOLO11 推理库 (新增)
@@ -95,6 +98,22 @@ TensorRT10Sharp/
 ```
 
 ## ⚡ 快速开始
+
+### 0. 快速安装（推荐）
+
+如果您只想使用 TensorRT10Sharp 类库，可以直接通过 NuGet 安装：
+
+```bash
+# 创建新项目
+dotnet new console -n MyTensorRTApp
+cd MyTensorRTApp
+
+# 安装 NuGet 包
+dotnet add package alanxinn.TensorRT10Sharp --version 0.1.0
+
+# 开始使用
+# 编辑 Program.cs，参考下面的使用示例
+```
 
 ### 1. 环境要求
 
@@ -202,6 +221,31 @@ bin\Release\net6.0\Yolo11Sharp.exe yolo11n.engine test.jpg result.jpg
 - 🎨 内置可视化工具
 - 🔧 灵活的配置选项
 
+## 📦 NuGet 包信息
+
+### 包详情
+- **包名**: `alanxinn.TensorRT10Sharp`
+- **版本**: `0.1.0`
+- **作者**: TensorRTSharp Team
+- **许可证**: MIT
+- **平台**: .NET 6.0, x64 (Windows)
+- **包地址**: https://www.nuget.org/packages/alanxinn.TensorRT10Sharp/
+- **项目地址**: https://github.com/alanxinn/TensorRT10Sharp
+
+### 包特性
+- 🚀 **高性能**: 基于 NVIDIA TensorRT 10 的 C# 封装
+- 🔄 **智能转换**: 自动 ONNX 到 TensorRT 引擎转换
+- 🛡️ **资源管理**: 完整的内存管理和异常处理
+- 📋 **易于使用**: 简洁的 C# API 接口
+- ⚡ **GPU 加速**: 充分利用 CUDA GPU 性能
+
+### 依赖要求
+- **.NET 6.0** 或更高版本
+- **Windows x64** 平台
+- **NVIDIA GPU** 支持 CUDA 11.8+
+- **TensorRT 10.x** 运行时库
+- **Visual C++ Redistributable** (通常已安装)
+
 ## 📖 使用示例
 
 ### 安装和引用
@@ -209,22 +253,32 @@ bin\Release\net6.0\Yolo11Sharp.exe yolo11n.engine test.jpg result.jpg
 #### 方法1: NuGet 包引用（推荐）
 ```xml
 <!-- 在项目文件中添加 -->
-<PackageReference Include="TensorRT10Sharp" Version="0.1.0" />
+<PackageReference Include="alanxinn.TensorRT10Sharp" Version="0.1.0" />
 ```
 
-#### 方法2: 项目引用
+```bash
+# 或使用 dotnet CLI 安装
+dotnet add package alanxinn.TensorRT10Sharp --version 0.1.0
+```
+
+#### 方法2: 包管理器控制台（Visual Studio）
+```powershell
+Install-Package alanxinn.TensorRT10Sharp -Version 0.1.0
+```
+
+#### 方法3: 项目引用
 ```xml
 <!-- 直接引用类库项目 -->
 <ProjectReference Include="path\to\Managed\TensorRT10Sharp.csproj" />
 ```
 
-#### 方法3: 本地 NuGet 包
+#### 方法4: 本地 NuGet 包
 ```bash
 # 添加本地包源
 dotnet nuget add source path\to\TensorRT10Sharp\Managed\bin\Release --name "Local"
 
 # 安装包
-dotnet add package TensorRT10Sharp --version 0.1.0 --source "Local"
+dotnet add package alanxinn.TensorRT10Sharp --version 0.1.0 --source "Local"
 ```
 
 ### 基础 TensorRT 使用
@@ -312,6 +366,7 @@ foreach (var result in results)
 - **基础 TensorRT 功能**: 引擎加载、推理执行、结果获取
 - **ONNX 自动转换**: 智能检测和转换ONNX模型为TensorRT引擎
 - **类库架构**: 标准.NET类库，支持NuGet包分发
+- **NuGet 包发布**: 已成功发布到 NuGet.org，支持包管理器安装
 - **YOLO11 目标检测**: 完整的检测流程，包括预处理、推理、后处理、可视化
 - **多模式架构**: 工厂模式、接口设计、模块化结构
 
@@ -389,6 +444,18 @@ Scripts\build.bat
    ```
    问题: 引擎文件加载失败
    解决: 使用trtexec转换ONNX模型，确保TensorRT版本匹配
+   ```
+
+6. **NuGet 包安装问题**
+   ```
+   问题: 包安装失败或找不到包
+   解决: 确保使用正确的包名 alanxinn.TensorRT10Sharp，检查网络连接
+   ```
+
+7. **运行时依赖缺失**
+   ```
+   问题: 运行时找不到 trt10.dll 或 CUDA 库
+   解决: 确保安装了 TensorRT 10.x 和 CUDA 11.8+，并添加到系统 PATH
    ```
 
 ### 调试技巧
