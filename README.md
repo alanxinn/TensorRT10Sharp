@@ -48,17 +48,21 @@ TensorRT10Sharp/
 │   │   └── clean.bat              # 清理Native项目
 │   ├── CMakeLists.txt             # CMake配置文件
 │   └── README.md                  # Native项目说明
-├── Managed/                        # C# 托管项目
+├── Managed/                        # C# 托管类库项目
 │   ├── src/                        # C# 源文件
 │   │   ├── Dims.cs                 # 维度结构体
 │   │   └── Nvinfer.cs              # TensorRT推理引擎类
-│   ├── examples/                   # C# 示例代码
-│   │   └── BasicExample.cs        # 基础使用示例
+│   ├── Examples/                   # C# 示例项目
+│   │   ├── BasicExample.cs        # 基础使用示例
+│   │   └── TensorRT10Sharp.Examples.csproj # 示例项目文件
 │   ├── scripts/                    # C# 构建脚本
-│   │   ├── build.bat              # 构建Managed项目
+│   │   ├── build.bat              # 构建类库和示例项目
 │   │   ├── run.bat                # 运行示例程序
-│   │   └── clean.bat              # 清理Managed项目
-│   ├── TensorRT10Sharp.csproj     # C# 项目文件
+│   │   └── clean.bat              # 清理项目
+│   ├── bin/Release/net6.0/        # 构建输出
+│   │   ├── TensorRT10Sharp.dll    # 主要类库
+│   │   └── TensorRT10Sharp.0.1.0.nupkg # NuGet 包
+│   ├── TensorRT10Sharp.csproj     # C# 类库项目文件
 │   └── README.md                  # Managed项目说明
 ├── Yolo11Sharp/                    # 🎯 YOLO11 推理库 (新增)
 │   ├── src/                        # 源代码
@@ -100,7 +104,7 @@ TensorRT10Sharp/
 - **Visual Studio 2019/2022** (包含C++开发工具)
 - **CMake** (版本 3.10或更高)
 
-#### Managed (C#) 项目
+#### Managed (C#) 类库项目
 - **.NET 6.0 SDK**
 
 ### 2. 构建项目
@@ -139,12 +143,12 @@ Scripts\build.bat
 # 方法1: 使用示例脚本
 run_example.bat
 
-# 方法2: 直接运行C#程序
+# 方法2: 直接运行C#示例程序
 cd Managed
 scripts\run.bat
 
-# 方法3: 使用.NET CLI
-dotnet run --project Managed\TensorRT10Sharp.csproj
+# 方法3: 使用.NET CLI 运行示例项目
+dotnet run --project Managed\Examples\TensorRT10Sharp.Examples.csproj
 ```
 
 #### YOLO11 检测示例 (已测试)
@@ -161,7 +165,7 @@ bin\Release\net6.0\Yolo11Sharp.exe yolo11n.engine test.jpg result.jpg
 
 ### 分离式架构
 - **Native项目**: 独立的C++项目，封装TensorRT C++ API
-- **Managed项目**: 独立的C#项目，提供.NET友好的API接口
+- **Managed项目**: 独立的C#类库项目，提供.NET友好的API接口，可作为NuGet包分发
 - **Yolo11Sharp项目**: 基于Managed项目的高级YOLO11推理库
 - **清晰分工**: 每个项目有自己的构建系统和脚本
 
@@ -184,6 +188,13 @@ bin\Release\net6.0\Yolo11Sharp.exe yolo11n.engine test.jpg result.jpg
 - 模型信息查询
 - 资源自动释放
 
+#### TensorRT10Sharp 类库特性
+- 📦 标准 .NET 类库，支持 NuGet 包分发
+- 🔄 智能 ONNX 自动转换功能
+- 🛡️ 完整的资源管理和异常处理
+- 🎯 简洁易用的 C# API 接口
+- ⚡ 高性能 P/Invoke 互操作
+
 #### Yolo11Sharp 高级功能
 - 🎯 多模式推理支持 (检测/分类/分割/OBB/姿态)
 - ⚡ 高性能GPU加速推理
@@ -193,13 +204,47 @@ bin\Release\net6.0\Yolo11Sharp.exe yolo11n.engine test.jpg result.jpg
 
 ## 📖 使用示例
 
+### 安装和引用
+
+#### 方法1: NuGet 包引用（推荐）
+```xml
+<!-- 在项目文件中添加 -->
+<PackageReference Include="TensorRT10Sharp" Version="0.1.0" />
+```
+
+#### 方法2: 项目引用
+```xml
+<!-- 直接引用类库项目 -->
+<ProjectReference Include="path\to\Managed\TensorRT10Sharp.csproj" />
+```
+
+#### 方法3: 本地 NuGet 包
+```bash
+# 添加本地包源
+dotnet nuget add source path\to\TensorRT10Sharp\Managed\bin\Release --name "Local"
+
+# 安装包
+dotnet add package TensorRT10Sharp --version 0.1.0 --source "Local"
+```
+
 ### 基础 TensorRT 使用
 
 ```csharp
 using TensorRTSharp;
 
-// 创建推理引擎
+// 方法1: 直接加载引擎文件
 using var infer = new Nvinfer("Assets/yolo11n.engine");
+
+// 方法2: 自动转换ONNX模型（如果引擎不存在）
+// 会自动检测 yolo11n.onnx 并转换为 yolo11n.engine
+using var infer2 = new Nvinfer("yolo11n.engine");
+
+// 方法3: 手动转换ONNX模型
+bool success = Nvinfer.ConvertOnnxToEngine("model.onnx", 1024);
+if (success)
+{
+    using var infer3 = new Nvinfer("model.engine");
+}
 
 // 获取模型信息
 Console.WriteLine($"输入数量: {infer.GetInputCount()}");
@@ -265,6 +310,8 @@ foreach (var result in results)
 
 ### ✅ 已完成测试
 - **基础 TensorRT 功能**: 引擎加载、推理执行、结果获取
+- **ONNX 自动转换**: 智能检测和转换ONNX模型为TensorRT引擎
+- **类库架构**: 标准.NET类库，支持NuGet包分发
 - **YOLO11 目标检测**: 完整的检测流程，包括预处理、推理、后处理、可视化
 - **多模式架构**: 工厂模式、接口设计、模块化结构
 
@@ -290,7 +337,7 @@ scripts\build.bat
 ### 2. 修改Managed代码
 ```bash
 # 编辑 Managed/src/*.cs 文件
-# 重新构建Managed项目
+# 重新构建Managed类库项目
 cd Managed
 scripts\build.bat
 ```
@@ -307,7 +354,7 @@ Scripts\build.bat
 1. 在Native项目中添加C++实现 (如需要)
 2. 在Managed项目中添加C#封装 (如需要)
 3. 在Yolo11Sharp项目中实现高级功能
-4. 在examples中添加使用示例
+4. 在Examples中添加使用示例
 5. 更新相关文档
 
 ## 🐛 故障排除

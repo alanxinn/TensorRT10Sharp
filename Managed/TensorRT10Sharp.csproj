@@ -6,8 +6,9 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x64</PlatformTarget>
-    <OutputType>Exe</OutputType>
-    <StartupObject>TensorRTSharp.Examples.BasicExample</StartupObject>
+    <OutputType>Library</OutputType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -17,13 +18,13 @@
     <Authors>TensorRTSharp Team</Authors>
     <Company>TensorRTSharp</Company>
     <PackageId>TensorRT10Sharp</PackageId>
-    <PackageVersion>2.0.0</PackageVersion>
+    <PackageVersion>0.1.0</PackageVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/guojin-yan/TensorRT-CSharp-API</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/guojin-yan/TensorRT-CSharp-API</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/alanxinn/TensorRT10Sharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/alanxinn/TensorRT10Sharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>tensorrt;tensorrt10;cuda;deep-learning;inference;gpu;csharp;dotnet</PackageTags>
-    <Copyright>Copyright © TensorRTSharp Team 2024</Copyright>
+    <Copyright>Copyright © alanxinn Team 2025</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

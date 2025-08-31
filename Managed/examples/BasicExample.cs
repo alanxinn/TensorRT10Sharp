@@ -1,260 +1,219 @@
 using System;
-using System.Diagnostics;
 using TensorRTSharp;
+using System.IO;
+using System.Linq;
 
 namespace TensorRTSharp.Examples
 {
     /// <summary>
-    /// TensorRT C# API 基础示例程序
+    /// TensorRT10Sharp 基础使用示例
     /// </summary>
     public class BasicExample
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("TensorRT10Sharp C#  测试程序");
-            Console.WriteLine("=======================");
+            Console.WriteLine("==============================================");
+            Console.WriteLine("TensorRT10Sharp C# 基础示例");
+            Console.WriteLine("==============================================");
+            Console.WriteLine();
+
+            try
+            {
+                // 检查是否有引擎文件参数
+                string enginePath = "yolo11n.engine";
+                
+                Console.WriteLine($"[INFO] 尝试加载引擎文件: {enginePath}");
+                
+                if (!File.Exists(enginePath))
+                {
+                    Console.WriteLine($"[WARNING] 引擎文件不存在: {enginePath}");
+                    
+                    // 尝试寻找对应的 ONNX 文件
+                    string onnxPath = Path.ChangeExtension(enginePath, ".onnx");
+                    if (File.Exists(onnxPath))
+                    {
+                        Console.WriteLine($"[INFO] 找到 ONNX 文件: {onnxPath}");
+                        Console.WriteLine("[INFO] 正在转换 ONNX 模型为 TensorRT 引擎...");
+                        
+                        if (ConvertOnnxToEngine(onnxPath, enginePath))
+                        {
+                            Console.WriteLine($"[SUCCESS] 成功转换为引擎文件: {enginePath}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("[ERROR] ONNX 转换失败");
+                            Console.WriteLine("[INFO] 继续演示 TensorRT10Sharp 基本功能...");
+                            Console.WriteLine();
+                            
+                            // 演示基本API
+                            DemonstrateBasicAPI();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[WARNING] 也未找到 ONNX 文件: {onnxPath}");
+                        Console.WriteLine("[INFO] 请确保引擎文件或 ONNX 文件存在");
+                        Console.WriteLine("[INFO] 或使用以下命令手动转换ONNX模型:");
+                        Console.WriteLine("       trtexec --onnx=model.onnx --saveEngine=model.engine --fp16");
+                        Console.WriteLine();
+                        Console.WriteLine("[INFO] 继续演示 TensorRT10Sharp 基本功能...");
+                        Console.WriteLine();
+                        
+                        // 演示基本API
+                        DemonstrateBasicAPI();
+                        return;
+                    }
+                }
+
+                // 创建推理引擎
+                using var infer = new Nvinfer(enginePath);
+                
+                Console.WriteLine("[SUCCESS] TensorRT 引擎加载成功！");
+                Console.WriteLine();
+                
+                // 显示模型信息
+                ShowModelInfo(infer);
+                
+                Console.WriteLine();
+                Console.WriteLine("[INFO] 示例运行完成！");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] 运行时错误: {ex.Message}");
+                Console.WriteLine($"[DEBUG] 详细信息: {ex}");
+            }
             
-            var example = new BasicExample();
-            example.RunAllTests();
-            
-            Console.WriteLine("\n测试完成！按任意键退出...");
+            Console.WriteLine();
+            Console.WriteLine("按任意键退出...");
             Console.ReadKey();
         }
         
         /// <summary>
-        /// 运行所有测试
+        /// 将 ONNX 模型转换为 TensorRT 引擎
         /// </summary>
-        public void RunAllTests()
+        /// <param name="onnxPath">ONNX 文件路径</param>
+        /// <param name="enginePath">输出引擎文件路径</param>
+        /// <returns>转换是否成功</returns>
+        private static bool ConvertOnnxToEngine(string onnxPath, string enginePath)
         {
             try
             {
-                // 测试1: ONNX模型转换为TensorRT引擎
-                Console.WriteLine("\n1. 测试ONNX模型转换为TensorRT引擎");
-                TestOnnxToEngine();
+                Console.WriteLine($"[INFO] 开始转换: {onnxPath} -> {enginePath}");
+                Console.WriteLine("[INFO] 使用 TensorRT10Sharp 进行 ONNX 转换...");
+                Console.WriteLine("[WARNING] 这可能需要几分钟时间，请耐心等待...");
                 
-                // 测试2: 加载TensorRT引擎并进行推理
-                Console.WriteLine("\n2. 测试加载TensorRT引擎并进行推理");
-                TestInference();
-                
-                // 测试3: Dims结构体功能
-                Console.WriteLine("\n3. 测试Dims结构体功能");
-                TestDims();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"✗ 发生错误: {ex.Message}");
-                Console.WriteLine($"堆栈跟踪: {ex.StackTrace}");
-            }
-        }
-        
-        /// <summary>
-        /// 测试ONNX模型转换
-        /// </summary>
-        private void TestOnnxToEngine()
-        {
-            string onnxModelPath = "yolo11n.onnx";
-            
-            if (System.IO.File.Exists(onnxModelPath))
-            {
-                Console.WriteLine($"找到ONNX模型文件: {onnxModelPath}");
-                bool success = Nvinfer.ConvertOnnxToEngine(onnxModelPath, 1024);
+                // 使用 TensorRT10Sharp 的静态方法进行转换
+                // 设置内存大小为 1GB (1024 MB)
+                bool success = Nvinfer.ConvertOnnxToEngine(onnxPath, 1024);
                 
                 if (success)
                 {
-                    Console.WriteLine($"✓ 成功将 {onnxModelPath} 转换为 TensorRT 引擎");
+                    // 检查转换后的引擎文件是否存在
+                    // TensorRT10Sharp 会自动生成 .engine 文件
+                    string autoGeneratedEngine = Path.ChangeExtension(onnxPath, ".engine");
+                    
+                    if (File.Exists(autoGeneratedEngine))
+                    {
+                        // 如果目标路径不同，则移动文件
+                        if (!string.Equals(autoGeneratedEngine, enginePath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (File.Exists(enginePath))
+                            {
+                                File.Delete(enginePath);
+                            }
+                            File.Move(autoGeneratedEngine, enginePath);
+                        }
+                        
+                        Console.WriteLine($"[SUCCESS] 引擎文件已保存: {enginePath}");
+                        Console.WriteLine($"[INFO] 文件大小: {new FileInfo(enginePath).Length / (1024 * 1024)} MB");
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("[WARNING] 转换成功但未找到引擎文件");
+                        return false;
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"✗ 转换 {onnxModelPath} 失败");
+                    Console.WriteLine("[ERROR] ONNX 转换失败");
+                    return false;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"✗ ONNX模型文件 {onnxModelPath} 不存在");
-                Console.WriteLine("请将ONNX模型文件放在项目根目录中");
+                Console.WriteLine($"[ERROR] ONNX 转换过程中发生异常: {ex.Message}");
+                Console.WriteLine($"[DEBUG] 详细信息: {ex}");
+                return false;
             }
         }
         
         /// <summary>
-        /// 测试推理功能
+        /// 演示基本API功能
         /// </summary>
-        private void TestInference()
+        private static void DemonstrateBasicAPI()
         {
-            string enginePath = "yolo11n.engine";
+            Console.WriteLine("=== TensorRT10Sharp 基本API演示 ===");
+            Console.WriteLine();
             
-            if (!System.IO.File.Exists(enginePath))
-            {
-                Console.WriteLine($"✗ TensorRT引擎文件 {enginePath} 不存在");
-                return;
-            }
+            // 演示 Dims 结构体
+            var dims = new Dims();
+            dims.SetDimension(0, 1);    // batch size
+            dims.SetDimension(1, 3);    // channels
+            dims.SetDimension(2, 640);  // height
+            dims.SetDimension(3, 640);  // width
+            dims.nbDims = 4;
             
-            try
-            {
-                using var infer = new Nvinfer(enginePath);
-                
-                // 获取模型信息
-                Console.WriteLine($"✓ 成功加载TensorRT引擎: {enginePath}");
-                Console.WriteLine($"输入数量: {infer.GetInputCount()}");
-                Console.WriteLine($"输出数量: {infer.GetOutputCount()}");
-                
-                // 显示输入输出信息
-                DisplayModelInfo(infer);
-                
-                // 执行推理测试
-                PerformInference(infer);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"✗ 推理测试失败: {ex.Message}");
-            }
+            Console.WriteLine($"[INFO] 创建维度信息: [{dims.GetDimension(0)}, {dims.GetDimension(1)}, {dims.GetDimension(2)}, {dims.GetDimension(3)}]");
+            Console.WriteLine($"[INFO] 元素总数: {dims.GetElementCount()}");
+            Console.WriteLine($"[INFO] 维度数量: {dims.nbDims}");
+            Console.WriteLine();
+            
+            Console.WriteLine("[INFO] TensorRT10Sharp 基本功能演示完成");
         }
         
         /// <summary>
         /// 显示模型信息
         /// </summary>
         /// <param name="infer">推理引擎</param>
-        private void DisplayModelInfo(Nvinfer infer)
+        private static void ShowModelInfo(Nvinfer infer)
         {
-            // 获取输入信息
-            for (int i = 0; i < infer.GetInputCount(); i++)
-            {
-                string? inputName = infer.GetInputName(i);
-                if (inputName != null)
-                {
-                    Dims inputDims = infer.GetBindingDimensions(inputName);
-                    Console.WriteLine($"输入 {i}: {inputName}, 维度: {FormatDims(inputDims)}");
-                }
-                else
-                {
-                    Console.WriteLine($"输入 {i}: null");
-                }
-            }
+            Console.WriteLine("=== 模型信息 ===");
             
-            // 获取输出信息
-            for (int i = 0; i < infer.GetOutputCount(); i++)
-            {
-                string? outputName = infer.GetOutputName(i);
-                if (outputName != null)
-                {
-                    Dims outputDims = infer.GetBindingDimensions(outputName);
-                    Console.WriteLine($"输出 {i}: {outputName}, 维度: {FormatDims(outputDims)}");
-                }
-                else
-                {
-                    Console.WriteLine($"输出 {i}: null");
-                }
-            }
-        }
-        
-        /// <summary>
-        /// 执行推理
-        /// </summary>
-        /// <param name="infer">推理引擎</param>
-        private void PerformInference(Nvinfer infer)
-        {
-            // 准备输入数据
-            string? firstInputName = infer.GetInputName(0);
-            if (firstInputName == null)
-            {
-                Console.WriteLine("✗ 无法获取第一个输入名称");
-                return;
-            }
+            // 获取输入输出数量
+            int inputCount = infer.GetInputCount();
+            int outputCount = infer.GetOutputCount();
             
-            Dims firstInputDims = infer.GetBindingDimensions(firstInputName);
-            int inputSize = firstInputDims.GetElementCount();
-            
-            float[] inputData = new float[inputSize];
-            for (int i = 0; i < inputSize; i++)
-            {
-                inputData[i] = (float)i / inputSize; // 示例数据
-            }
-            
-            // 加载输入数据
-            infer.LoadInferenceData(firstInputName, inputData);
-            
-            // 执行推理
-            Console.WriteLine("执行推理...");
-            var stopwatch = Stopwatch.StartNew();
-            infer.Infer();
-            stopwatch.Stop();
-            Console.WriteLine($"✓ 推理完成，耗时: {stopwatch.ElapsedMilliseconds}ms");
-            
-            // 获取输出结果
-            string? firstOutputName = infer.GetOutputName(0);
-            if (firstOutputName == null)
-            {
-                Console.WriteLine("✗ 无法获取第一个输出名称");
-                return;
-            }
-            
-            float[] outputData = infer.GetInferenceResult(firstOutputName);
-            
-            Console.WriteLine($"输出数据大小: {outputData.Length}");
-            Console.WriteLine("前10个输出值:");
-            for (int i = 0; i < Math.Min(10, outputData.Length); i++)
-            {
-                Console.Write($"{outputData[i]:F4} ");
-            }
+            Console.WriteLine($"输入数量: {inputCount}");
+            Console.WriteLine($"输出数量: {outputCount}");
             Console.WriteLine();
-        }
-        
-        /// <summary>
-        /// 测试Dims结构体功能
-        /// </summary>
-        private void TestDims()
-        {
-            try
+            
+            // 显示输入信息
+            Console.WriteLine("输入层信息:");
+            for (int i = 0; i < inputCount; i++)
             {
-                // 创建Dims结构体
-                Dims dims = new Dims();
-                Console.WriteLine($"创建Dims: nbDims={dims.nbDims}");
+                string inputName = infer.GetInputName(i);
+                var inputDims = infer.GetBindingDimensions(inputName);
                 
-                // 设置维度
-                dims.SetDimension(0, 1);
-                dims.SetDimension(1, 3);
-                dims.SetDimension(2, 640);
-                dims.SetDimension(3, 640);
-                
-                Console.WriteLine($"设置维度后: nbDims={dims.nbDims}");
-                Console.WriteLine($"维度值: [{dims.d[0]}, {dims.d[1]}, {dims.d[2]}, {dims.d[3]}]");
-                
-                // 获取维度信息
-                int dim0 = dims.GetDimension(0);
-                int dim1 = dims.GetDimension(1);
-                Console.WriteLine($"获取维度: dim0={dim0}, dim1={dim1}");
-                
-                // 计算元素总数
-                int elementCount = dims.GetElementCount();
-                Console.WriteLine($"元素总数: {elementCount}");
-                
-                Console.WriteLine("✓ Dims结构体功能测试通过");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"✗ Dims结构体测试失败: {ex.Message}");
-            }
-        }
-        
-        /// <summary>
-        /// 格式化维度信息
-        /// </summary>
-        /// <param name="dims">维度结构体</param>
-        /// <returns>格式化的维度字符串</returns>
-        private static string FormatDims(Dims dims)
-        {
-            if (dims.nbDims == 0)
-            {
-                return "[]";
+                Console.WriteLine($"  [{i}] 名称: {inputName}");
+                Console.WriteLine($"      维度: [{string.Join(", ", Enumerable.Range(0, inputDims.nbDims).Select(j => inputDims.GetDimension(j)))}]");
+                Console.WriteLine($"      元素数: {inputDims.GetElementCount()}");
             }
             
-            string result = "[";
-            for (int i = 0; i < dims.nbDims; i++)
+            Console.WriteLine();
+            
+            // 显示输出信息
+            Console.WriteLine("输出层信息:");
+            for (int i = 0; i < outputCount; i++)
             {
-                if (i > 0) result += ", ";
-                result += dims.d[i];
+                string outputName = infer.GetOutputName(i);
+                var outputDims = infer.GetBindingDimensions(outputName);
+                
+                Console.WriteLine($"  [{i}] 名称: {outputName}");
+                Console.WriteLine($"      维度: [{string.Join(", ", Enumerable.Range(0, outputDims.nbDims).Select(j => outputDims.GetDimension(j)))}]");
+                Console.WriteLine($"      元素数: {outputDims.GetElementCount()}");
             }
-            result += "]";
-            return result;
         }
     }
 } 

@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyTitle>TensorRT10Sharp Examples</AssemblyTitle>
+    <Product>TensorRT10Sharp Examples</Product>
+    <Description>TensorRT10Sharp usage examples</Description>
+    <Authors>TensorRTSharp Team</Authors>
+    <Company>TensorRTSharp</Company>
+    <Copyright>Copyright © TensorRTSharp Team 2024</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TensorRT10Sharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\trt10.dll" Condition="Exists('..\..\trt10.dll')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>trt10.dll</Link>
+    </None>
+    <None Include="..\..\Assets\*.*" Exclude="..\..\Assets\*.onnx;..\..\Assets\*.engine">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Assets\%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Assets\*.onnx" Condition="Exists('..\..\Assets\*.onnx')">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Assets\*.engine" Condition="Exists('..\..\Assets\*.engine')">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project> 

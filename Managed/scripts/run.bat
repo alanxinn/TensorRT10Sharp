@@ -1,14 +1,14 @@
 @echo off
 REM ==============================================
-REM TensorRT10Sharp Managed 运行脚本
+REM TensorRT10Sharp Examples 运行脚本
 REM ==============================================
 
-echo [INFO] 运行 TensorRT10Sharp Managed 项目...
+echo [INFO] 运行 TensorRT10Sharp 示例程序...
 
 REM 设置变量
 set SCRIPT_DIR=%~dp0
 set PROJECT_ROOT=%SCRIPT_DIR%..
-set PROJECT_FILE=%PROJECT_ROOT%\TensorRT10Sharp.csproj
+set EXAMPLES_PROJECT=%PROJECT_ROOT%\Examples\TensorRT10Sharp.Examples.csproj
 set BUILD_CONFIG=Release
 
 REM 检查.NET SDK是否安装
@@ -20,51 +20,51 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM 检查项目文件是否存在
-if not exist "%PROJECT_FILE%" (
-    echo [ERROR] 项目文件不存在: %PROJECT_FILE%
+REM 检查示例项目是否存在
+if not exist "%EXAMPLES_PROJECT%" (
+    echo [ERROR] 示例项目文件不存在: %EXAMPLES_PROJECT%
+    echo [INFO] 请先构建项目或检查项目结构
     pause
     exit /b 1
 )
 
 REM 检查Native DLL是否存在
 if not exist "%PROJECT_ROOT%\..\trt10.dll" (
-    echo [ERROR] Native DLL 不存在: %PROJECT_ROOT%\..\trt10.dll
-    echo [INFO] 请先构建 Native 项目
-    pause
-    exit /b 1
+    echo [WARNING] Native DLL 不存在: %PROJECT_ROOT%\..\trt10.dll
+    echo [INFO] 请先构建 Native 项目或确保 trt10.dll 存在于项目根目录
+    echo [INFO] 继续运行示例程序...
 )
 
 REM 进入项目目录
 cd /d "%PROJECT_ROOT%"
 
-REM 检查是否已构建 - 修复路径检查
-set OUTPUT_DIR=%PROJECT_ROOT%\bin\x64\%BUILD_CONFIG%\net6.0
-if not exist "%OUTPUT_DIR%\TensorRT10Sharp.exe" (
-    REM 尝试其他可能的输出路径
-    set OUTPUT_DIR=%PROJECT_ROOT%\bin\%BUILD_CONFIG%\net6.0
-    if not exist "%OUTPUT_DIR%\TensorRT10Sharp.exe" (
-        echo [INFO] 项目尚未构建，正在构建...
-        call "%PROJECT_ROOT%\scripts\build.bat"
-        if %errorlevel% neq 0 (
-            echo [ERROR] 构建失败，无法运行
-            pause
-            exit /b 1
-        )
+REM 检查是否已构建
+set EXAMPLES_OUTPUT_DIR=%PROJECT_ROOT%\Examples\bin\%BUILD_CONFIG%\net6.0
+if not exist "%EXAMPLES_OUTPUT_DIR%\TensorRT10Sharp.Examples.exe" (
+    echo [INFO] 示例程序未构建，正在构建...
+    call "%SCRIPT_DIR%build.bat"
+    if %errorlevel% neq 0 (
+        echo [ERROR] 构建失败，无法运行示例
+        pause
+        exit /b 1
     )
 )
 
-REM 运行项目
-echo [INFO] 运行项目...
-echo ============================================
-dotnet run --project "%PROJECT_FILE%" --configuration %BUILD_CONFIG%
-echo ============================================
+REM 运行示例程序
+echo [INFO] 启动示例程序...
+echo [INFO] 输出目录: %EXAMPLES_OUTPUT_DIR%
+echo.
+
+REM 使用 dotnet run 运行示例项目
+dotnet run --project "%EXAMPLES_PROJECT%" --configuration %BUILD_CONFIG%
 
 if %errorlevel% neq 0 (
-    echo [ERROR] 运行失败
+    echo.
+    echo [ERROR] 示例程序运行失败
     pause
     exit /b 1
 )
 
-echo [INFO] 程序运行完成！
+echo.
+echo [INFO] 示例程序运行完成！
 pause 
