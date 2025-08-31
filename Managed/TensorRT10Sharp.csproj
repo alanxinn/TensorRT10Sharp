@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputType>Exe</OutputType>
+    <StartupObject>TensorRTSharp.Examples.BasicExample</StartupObject>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyTitle>TensorRT10Sharp C#</AssemblyTitle>
+    <Product>TensorRT10Sharp</Product>
+    <Description>TensorRT10 wrapper for .NET - 为.NET平台提供的NVIDIA TensorRT10封装库</Description>
+    <Authors>TensorRTSharp Team</Authors>
+    <Company>TensorRTSharp</Company>
+    <PackageId>TensorRT10Sharp</PackageId>
+    <PackageVersion>2.0.0</PackageVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/guojin-yan/TensorRT-CSharp-API</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/guojin-yan/TensorRT-CSharp-API</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>tensorrt;tensorrt10;cuda;deep-learning;inference;gpu;csharp;dotnet</PackageTags>
+    <Copyright>Copyright © TensorRTSharp Team 2024</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\trt10.dll" Condition="Exists('..\trt10.dll')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>trt10.dll</Link>
+    </None>
+    <None Include="..\Assets\*.*" Exclude="..\Assets\*.onnx;..\Assets\*.engine">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Assets\%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Documentation\*.md">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!-- 开发时包含大型模型文件，但不复制到输出目录 -->
+  <ItemGroup>
+    <None Include="..\Assets\*.onnx" Condition="Exists('..\Assets\*.onnx')">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Assets\*.engine" Condition="Exists('..\Assets\*.engine')">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project> 

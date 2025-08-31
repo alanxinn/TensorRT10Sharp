@@ -1,0 +1,85 @@
+# =========================
+# TensorRT10Sharp Git属性配置
+# =========================
+
+# 设置行尾符处理
+* text=auto
+
+# Windows批处理文件使用CRLF
+*.bat text eol=crlf
+
+# Shell脚本使用LF
+*.sh text eol=lf
+
+# C/C++源文件
+*.c text
+*.cpp text
+*.h text
+*.hpp text
+
+# C#源文件
+*.cs text
+
+# 项目文件
+*.csproj text
+*.sln text
+*.props text
+*.targets text
+
+# 配置文件
+*.json text
+*.xml text
+*.yml text
+*.yaml text
+
+# 文档文件
+*.md text
+*.txt text
+
+# Git LFS 管理的大型文件
+# 模型文件
+*.onnx filter=lfs diff=lfs merge=lfs -text
+*.engine filter=lfs diff=lfs merge=lfs -text
+*.plan filter=lfs diff=lfs merge=lfs -text
+*.pb filter=lfs diff=lfs merge=lfs -text
+*.trt filter=lfs diff=lfs merge=lfs -text
+*.wts filter=lfs diff=lfs merge=lfs -text
+
+# 权重和检查点文件
+*.pth filter=lfs diff=lfs merge=lfs -text
+*.pt filter=lfs diff=lfs merge=lfs -text
+*.ckpt filter=lfs diff=lfs merge=lfs -text
+*.safetensors filter=lfs diff=lfs merge=lfs -text
+
+# 数据集文件
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.tar.gz filter=lfs diff=lfs merge=lfs -text
+*.7z filter=lfs diff=lfs merge=lfs -text
+
+# 大型二进制文件
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.so filter=lfs diff=lfs merge=lfs -text
+*.dylib filter=lfs diff=lfs merge=lfs -text
+
+# 但排除项目必需的小型DLL文件
+trt10.dll -filter -diff -merge text
+
+# 图像和视频文件
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+*.ico binary
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.avi filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text
+
+# 音频文件
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+
+# 其他二进制文件
+*.pdf binary
+*.exe binary
+*.msi binary 

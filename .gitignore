@@ -1,0 +1,177 @@
+# =========================
+# TensorRT10Sharp C# 项目忽略文件
+# =========================
+
+# Visual Studio 生成的文件
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.docstates
+*.tmp
+*.log
+
+# Visual Studio 2019/2022
+.vs/
+.vscode/
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# 编译输出
+*.dll
+*.exe
+*.pdb
+*.lib
+*.exp
+*.ilk
+*.map
+*.pch
+
+# TensorRT和CUDA相关的DLL文件（系统库，不应提交）
+nvinfer*.dll
+nvonnxparser*.dll
+cudart*.dll
+cublas*.dll
+curand*.dll
+cusparse*.dll
+cusolver*.dll
+cufft*.dll
+
+# CMake 生成的文件
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# CUDA 编译产物
+*.ptx
+*.cubin
+*.fatbin
+
+# TensorRT 引擎文件（大文件，通常不提交到版本控制）
+Assets/*.engine
+*.plan
+
+# 大型模型文件（可选择性忽略，根据项目需要调整）
+Assets/*.onnx
+Assets/*.pb
+Assets/*.trt
+Assets/*.wts
+
+# 但保留示例模型文件的占位符或小型测试文件
+!Assets/README.md
+!Assets/.gitkeep
+
+# 测试和临时文件
+test_results/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet 包和依赖
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# .NET Core 生成的文件
+project.assets.json
+project.nuget.cache
+*.nuget.props
+*.nuget.targets
+
+# MSTest 测试结果
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# 性能分析文件
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# 操作系统生成的文件
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# 备份文件
+*.bak
+*.backup
+*.old
+
+# 环境配置文件（可能包含敏感信息）
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 自定义配置文件
+config.local.json
+appsettings.local.json
+
+# 性能测试结果
+BenchmarkDotNet.Artifacts/
+
+# 代码覆盖率报告
+coverage/
+*.lcov
+
+# 文档生成文件
+docs/_build/
+site/
+
+# 依赖管理
+node_modules/
+bower_components/
+
+# IDE 特定文件
+*.swp
+*.swo
+*~
+.project
+.metadata
+.classpath
+.settings/
+
+# 项目特定忽略
+# 如果有特定的配置文件或大型资源文件需要忽略，可以在这里添加
+
+# 保留重要的项目文件（确保不被意外忽略）
+!README.md
+!CMakeLists.txt
+!*.csproj
+!*.sln 

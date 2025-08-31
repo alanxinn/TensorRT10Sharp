@@ -1,0 +1,89 @@
+# =========================
+# TensorRT10Sharp 编辑器配置
+# =========================
+
+# 顶级EditorConfig文件
+root = true
+
+# 所有文件的默认设置
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# C# 文件
+[*.cs]
+indent_style = space
+indent_size = 4
+end_of_line = crlf
+
+# C# 代码风格规则
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# 表达式级首选项
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = false:suggestion
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
+dotnet_style_require_accessibility_modifiers = always:suggestion
+dotnet_style_readonly_field = true:suggestion
+
+# 语言关键字与BCL类型首选项
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
+
+# 括号首选项
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary:silent
+
+# C++ 文件
+[*.{cpp,h,hpp}]
+indent_style = space
+indent_size = 4
+end_of_line = crlf
+
+# CMake 文件
+[CMakeLists.txt,*.cmake]
+indent_style = space
+indent_size = 2
+
+# JSON 文件
+[*.json]
+indent_style = space
+indent_size = 2
+
+# XML 文件 (包括 .csproj, .props, .targets)
+[*.{xml,csproj,props,targets}]
+indent_style = space
+indent_size = 2
+
+# YAML 文件
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Markdown 文件
+[*.md]
+trim_trailing_whitespace = false
+indent_style = space
+indent_size = 2
+
+# 批处理文件
+[*.bat]
+end_of_line = crlf
+indent_style = space
+indent_size = 2
+
+# Shell 脚本
+[*.sh]
+end_of_line = lf
+indent_style = space
+indent_size = 2 
